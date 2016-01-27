@@ -1,6 +1,6 @@
 {
     "projects": [
-        "src",
+        "Ngonzalez.Util",
         "test"
     ],
     "sdk": {

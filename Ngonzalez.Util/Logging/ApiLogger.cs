@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+
+
 namespace Ngonzalez.Util.Logging
 {
     public class ApiLogger : ILogger

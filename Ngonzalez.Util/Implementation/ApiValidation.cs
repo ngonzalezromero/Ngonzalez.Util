@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Microsoft.Security.Application;
+
 
 namespace Ngonzalez.Util
 {
@@ -9,7 +9,7 @@ namespace Ngonzalez.Util
     {
         public T CleanParameter<T>(T data) where T : IConvertible
         {
-            var temp = Sanitizer.GetSafeHtmlFragment(data.ToString(CultureInfo.InvariantCulture));
+            var temp = AntiXSS.Sanitize(data.ToString(CultureInfo.InvariantCulture));
 
             return ((T)(Convert.ChangeType(temp, typeof(T))));
         }
