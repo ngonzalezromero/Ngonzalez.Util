@@ -87,7 +87,9 @@ namespace Ngonzalez.Util.Logging
             dic.Add("logLevel", logLev);
             dic.Add("message", message);
 
-            Task.Run(() => _helper.UrlHost(_urlHost).UrlApi(_urlApi).HttpMethod(RestMethod.Get).RequestParameter(dic).ExecuteSafe());
+           var e =_helper.UrlHost(_urlHost).UrlApi(_urlApi).HttpMethod(RestMethod.Get).RequestParameter(dic).ExecuteSafe();
+
+            //Task.Run(() => _helper.UrlHost(_urlHost).UrlApi(_urlApi).HttpMethod(RestMethod.Get).RequestParameter(dic).ExecuteSafe());
         }
 
         public bool IsEnabled(LogLevel logLevel)

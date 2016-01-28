@@ -3,26 +3,25 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
-using CodeComb.Security.Aes;
 using System.Reflection;
 namespace Ngonzalez.Util
 {
-    public sealed class ApiUtil : IApiUtil
+    public sealed class ApiUtil: IApiUtil
     {
 
         private const string AllowedChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@$?_-";
         private const byte MaxLength = 15;
 
-        public string EncriptData(string plainText, string seed)
+        public string EncriptData(string plainText, string seed, string iv)
         {
-            return new AesCrypto(seed).Encrypt(plainText);
+            return new Aes(seed,iv).Encrypt(plainText);
         }
 
-        public string DecryptData(string cipherText, string seed)
+        public string DecryptData(string cipherText, string seed,string iv)
         {
             try
             {
-                return new AesCrypto(seed).Decrypt(cipherText);
+                return new Aes(seed,iv).Decrypt(cipherText);
             }
             catch (Exception)
             {
@@ -51,28 +50,16 @@ namespace Ngonzalez.Util
             return $"{i - DateTime.Now.Ticks:x}";
         }
 
-
         public string GeneratePassword()
         {
-            return Truncate(new AesCrypto().Encrypt(DateTime.Now.Ticks.ToString()), MaxLength);
+            return Truncate(new Aes().Encrypt(DateTime.Now.Ticks.ToString()), MaxLength);
         }
 
         private string Truncate( string value, int maxLength)
         {
             if (string.IsNullOrEmpty(value)) return value;
+
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
-        }
-
-        private static char[] CreateRandomChar(int stringLength)
-        {
-            var chars = new char[stringLength];
-            var rd = new Random();
-
-            for (int i = 0; i < stringLength; i++)
-            {
-                chars[i] = AllowedChars[rd.Next(0, AllowedChars.Length)];
-            }
-            return chars;
         }
 
         public Func<T, object> GetLambda<T>(string property)
