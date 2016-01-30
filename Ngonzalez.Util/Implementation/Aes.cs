@@ -103,7 +103,7 @@ namespace Ngonzalez.Util
                     }
                 }
             }
-            catch(Exception e)
+            catch
             {
 
             }

@@ -12,7 +12,7 @@ namespace TestNgonzalez.Util
 
     public class Class1
     {
-        /*
+        
         private const string Password = "AUUKXLPQMyUUhALQGUKAmttCcRqIxCKj";
         private const string iv = "HH5UNPJAI668QM6S";
         
@@ -124,16 +124,17 @@ namespace TestNgonzalez.Util
         [Fact]
         public void TestingGetRestApi()
         {
-            var root = "http://jsonplaceholder.typicode.com";
-            var api = "posts";
+            var root = "http://localhost:32934";
+            var api = "Logger/GenerateApiKey";
 
             var param = new Dictionary<string, string>
             {
-                {"userId", "1"}
+                {"system", "dnxtest"}
 
             };
             var e = new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteSafe();
-            Assert.True(e[0].userId == 1);
+
+            Assert.True(e.message =="New ApiKey" || e.message =="Renew ApiKey");
         }
 
         [Fact]
@@ -149,16 +150,16 @@ namespace TestNgonzalez.Util
         [Fact]
         public async Task TestingGetRestApiAsync()
         {
-            var root = "http://jsonplaceholder.typicode.com";
-            var api = "posts";
+            var root = "http://localhost:32934";
+            var api = "Logger/GenerateApiKey";
 
             var param = new Dictionary<string, string>
             {
-                {"userId", "1"}
+                {"system", "dnxtest"}
 
             };
             dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteAsync();
-            Assert.True(e[0].userId == 1);
+            Assert.True(e.message =="New ApiKey" || e.message =="Renew ApiKey");
         }
 
         [Fact]
@@ -170,13 +171,15 @@ namespace TestNgonzalez.Util
             dynamic e =await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteAsync();
             Assert.True(e.id == 101);
         }
-        */
+        
         [Fact]
         public void ShouldInsertLogger()
         {
-            var root = "http://jsonplaceholder.typicode.com";
-            var api = "posts";
-            var log = new ApiLogger("loggerName", LogLevel.Error, null, new RestHelper(), root, api, "apiKey", "fake");
+
+            
+            var root = "http://localhost:32934";
+            var api = "Logger/Insert";
+            var log = new ApiLogger("loggerName", LogLevel.Error, null, new RestHelper(), root, api, "4323421416617522858739231", "fake");
 
             log.Log(LogLevel.Error, 1, new object(), new Exception("Fake EXception"), null);
             Assert.True(true);

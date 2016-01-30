@@ -5,10 +5,6 @@ using System.Text;
 using System.Threading;
 using Microsoft.AspNet.Http;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-
 
 namespace Ngonzalez.Util.Logging
 {
@@ -75,21 +71,21 @@ namespace Ngonzalez.Util.Logging
             var thread = Thread.CurrentThread.ManagedThreadId.ToString();
             var logLev = logLevel.ToString();
 
-            var dic = new Dictionary<string, string>();
-            dic.Add("apiKey", _apiKey);
-            dic.Add("system", _system);
-            dic.Add("ipAddress", ipAddress);
-            dic.Add("culture", culture);
-            dic.Add("url", url);
-            dic.Add("method", method);
-            dic.Add("thread", thread);
-            dic.Add("logName", _loggerName);
-            dic.Add("logLevel", logLev);
-            dic.Add("message", message);
-
-           var e =_helper.UrlHost(_urlHost).UrlApi(_urlApi).HttpMethod(RestMethod.Get).RequestParameter(dic).ExecuteSafe();
-
-            //Task.Run(() => _helper.UrlHost(_urlHost).UrlApi(_urlApi).HttpMethod(RestMethod.Get).RequestParameter(dic).ExecuteSafe());
+            _helper.UrlHost(_urlHost).UrlApi(_urlApi).HttpMethod(RestMethod.Post).RequestBody(new
+            {
+                apiKey = _apiKey,
+                system = _system,
+                ipAddress = ipAddress,
+                culture = culture,
+                url = url,
+                method = method,
+                thread = thread,
+                logName = _loggerName,
+                logLevel = logLev,
+                message = message
+            }
+           ).Execute();
+           
         }
 
         public bool IsEnabled(LogLevel logLevel)
@@ -105,20 +101,20 @@ namespace Ngonzalez.Util.Logging
         private string GetIpAddress()
         {
             var ip = _httpContext?.HttpContext?.Connection;
-            return ip != null ? ip.RemoteIpAddress?.ToString() : string.Empty;
+            return ip != null ? ip.RemoteIpAddress?.ToString() : "No Aviavable";
 
         }
 
         private string GetMethod()
         {
             var request = _httpContext?.HttpContext?.Request;
-            return request != null ? request.Method : string.Empty;
+            return request != null ? request.Method : "No Aviavable"; ;
         }
 
         private string GetRequestUrl()
         {
             var request = _httpContext?.HttpContext?.Request;
-            return request != null ? $"{request.Host.Value}/{request.Path}" : string.Empty;
+            return request != null ? $"{request.Host.Value}/{request.Path}" : "No Aviavable"; ;
         }
 
         private static void FormatLogValues(StringBuilder builder, ILogValues logValues, int level, bool bullet)

@@ -1,0 +1,38 @@
+{
+  "version": "1.0.1",
+  "description": "Ngonzalez.Util",
+  "authors": [ "Ngonzalez" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "dependencies": {
+    "Microsoft.Extensions.Logging.Abstractions": "1.0.0-rc1-final",
+    "Microsoft.Extensions.Caching.Memory": "1.0.0-rc1-final",
+    "Microsoft.AspNet.Hosting": "1.0.0-rc1-final",
+    "Microsoft.AspNet.Mvc": "6.0.0-*",
+    "CodeComb.HtmlAgilityPack": "2.0.0-*"
+  },
+
+  "frameworks": {
+    "dnx451": {
+      "frameworkAssemblies": {
+        "System.Net.Http": "4.0.0.0"
+      }
+
+    },
+    "dnxcore50": {
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.1-*",
+        "System.Collections": "4.0.11-*",
+        "System.Linq": "4.0.1-*",
+        "System.Runtime": "4.0.21-*",
+        "System.Threading": "4.0.11-*",
+        "System.Threading.Thread": "4.0.0-*",
+        "System.Security.Cryptography.RandomNumberGenerator": "4.0.0-*",
+        "System.Net.Http": "4.0.0-*"
+      }
+    }
+
+  }
+}
