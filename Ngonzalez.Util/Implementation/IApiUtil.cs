@@ -1,4 +1,6 @@
-﻿namespace Ngonzalez.Util
+﻿using System;
+
+namespace Ngonzalez.Util
 {
     public interface IApiUtil
     {
@@ -7,5 +9,6 @@
         string GenerateApiKey();
         string GeneratePassword();
         string GenerateUserKey();
+        Func<T, object> GetLambda<T>(string property); 
     }
 }

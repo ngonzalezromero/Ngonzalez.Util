@@ -159,6 +159,7 @@ namespace TestNgonzalez.Util
 
             };
             dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteAsync();
+            Console.WriteLine(e);
             Assert.True(e.message =="New ApiKey" || e.message =="Renew ApiKey");
         }
 
