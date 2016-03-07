@@ -9,6 +9,7 @@ namespace Ngonzalez.Util
         string GenerateApiKey();
         string GeneratePassword();
         string GenerateUserKey();
+        string GetMonthName(int month);
         Func<T, object> GetLambda<T>(string property); 
     }
 }
