@@ -85,6 +85,38 @@ namespace Ngonzalez.Util
             var convert = Expression.Convert(parent, typeof(object));
             return Expression.Lambda<Func<T, object>>(convert, param).Compile();
         }
+        
+        
+        public void ValidPaginationParameter<T>(int? pageIndex, int? pageSize, string column, bool? orderDescending)
+        {
+            if (pageIndex == null)
+            {
+                ExceptionLogAndThrow<AppException>("Invalid pageIndex");
+            }
+
+            if (pageSize == null)
+            {
+                ExceptionLogAndThrow<AppException>("Invalid pageSize");
+            }
+
+            if (string.IsNullOrWhiteSpace(column) || column.ToLower() == "null")
+            {
+                ExceptionLogAndThrow<AppException>("Invalid column");
+            }
+
+            if (orderDescending == null)
+            {
+                ExceptionLogAndThrow<AppException>("Invalid order");
+            }
+
+            if (typeof(T).GetProperties().All(x => x.Name != column))
+            {
+                ExceptionLogAndThrow<AppException>($"Column {column} no exists");
+            }
+
+        }
+
+        
 
         public string GetMonthName(int month)
         {

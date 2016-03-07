@@ -10,6 +10,7 @@ namespace Ngonzalez.Util
         string GeneratePassword();
         string GenerateUserKey();
         string GetMonthName(int month);
+        void ValidPaginationParameter<T>(int? pageIndex, int? pageSize, string column, bool? orderDescending);
         Func<T, object> GetLambda<T>(string property); 
     }
 }
