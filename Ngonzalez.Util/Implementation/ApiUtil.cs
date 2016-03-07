@@ -4,6 +4,8 @@ using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 using System.Reflection;
+using Ngonzalez.Util.CustomException;
+
 namespace Ngonzalez.Util
 {
     public sealed class ApiUtil: IApiUtil
@@ -91,27 +93,27 @@ namespace Ngonzalez.Util
         {
             if (pageIndex == null)
             {
-                ExceptionLogAndThrow<AppException>("Invalid pageIndex");
+                throw new AppException("Invalid pageIndex");
             }
 
             if (pageSize == null)
             {
-                ExceptionLogAndThrow<AppException>("Invalid pageSize");
+                throw new AppException("Invalid pageSize");
             }
 
             if (string.IsNullOrWhiteSpace(column) || column.ToLower() == "null")
             {
-                ExceptionLogAndThrow<AppException>("Invalid column");
+                throw new AppException("Invalid column");
             }
 
             if (orderDescending == null)
             {
-                ExceptionLogAndThrow<AppException>("Invalid order");
+                throw new AppException("Invalid order");
             }
 
             if (typeof(T).GetProperties().All(x => x.Name != column))
             {
-                ExceptionLogAndThrow<AppException>($"Column {column} no exists");
+                throw new AppException($"Column {column} no exists");
             }
 
         }
