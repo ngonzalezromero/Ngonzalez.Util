@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNet.Http;
 
 namespace Ngonzalez.Util
 {
@@ -11,6 +12,7 @@ namespace Ngonzalez.Util
         string GenerateUserKey();
         string GetMonthName(int month);
         void ValidPaginationParameter<T>(int? pageIndex, int? pageSize, string column, bool? orderDescending);
-        Func<T, object> GetLambda<T>(string property); 
+        Func<T, object> GetLambda<T>(string property);
+        bool IsMobileBrowser(HttpRequest request);
     }
 }
