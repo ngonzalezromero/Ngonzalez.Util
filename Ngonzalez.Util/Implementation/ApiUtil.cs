@@ -6,7 +6,7 @@ using System.Text;
 using System.Reflection;
 using Ngonzalez.Util.CustomException;
 using System.Text.RegularExpressions;
-using Microsoft.AspNet.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace Ngonzalez.Util
 {

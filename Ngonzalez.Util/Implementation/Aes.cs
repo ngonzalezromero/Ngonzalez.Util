@@ -54,7 +54,8 @@ namespace Ngonzalez.Util
             byte[] byteArray = Convert.FromBase64String(encryptStr);
 
             string decrypt = null;
-#if DNXCORE50
+
+#if NETCOREAPP1_0
             var aes = System.Security.Cryptography.Aes.Create();
 #else
             var aes = Rijndael.Create();
@@ -72,7 +73,7 @@ namespace Ngonzalez.Util
                 }
             }
             catch { }
-#if !DNXCORE50
+#if !NETCOREAPP1_0
             aes.Clear();
 #endif
 
@@ -86,7 +87,7 @@ namespace Ngonzalez.Util
             byte[] byteArray = Encoding.UTF8.GetBytes(plainStr);
 
             string encrypt = null;
-#if DNXCORE50
+#if NETCOREAPP1_0
             var aes = System.Security.Cryptography.Aes.Create();
 #else
             var aes = Rijndael.Create();
@@ -107,7 +108,7 @@ namespace Ngonzalez.Util
             {
 
             }
-#if !DNXCORE50
+#if !NETCOREAPP1_0
             aes.Clear();
 #endif
             return encrypt;
