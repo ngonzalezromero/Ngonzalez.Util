@@ -24,6 +24,11 @@
     "netcoreapp1.0": {
       "imports": [ "dnxcore50" ]
     },
-    "net451": { }
+    "net451": {
+      "dependencies": {
+        "System.Runtime": "4.1.0-rc2-24027"
+      }
+
+    }
   }
 }

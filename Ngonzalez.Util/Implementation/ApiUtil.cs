@@ -78,11 +78,11 @@ namespace Ngonzalez.Util
             Expression parent = Expression.Property(param, property);
 
 
-#if DNX451
+#if NET451
             if (!parent.Type.IsValueType)
 #endif
 
-#if DNXCORE50
+#if NETCOREAPP1_0
                 if (!parent.GetType().GetTypeInfo().IsValueType)
 #endif
 
