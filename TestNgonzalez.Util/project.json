@@ -8,7 +8,7 @@
     },
     "xunit": "2.1.0-rc2-*",
     "dotnet-test-xunit": "1.0.0-rc2-*",
-    "Ngonzalez.Util": "1.2.7"  },
+    "Ngonzalez.Util": "1.2.8"  },
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [

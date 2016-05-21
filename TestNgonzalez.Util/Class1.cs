@@ -5,16 +5,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using Ngonzalez.Util.Logging;
 
 namespace TestNgonzalez.Util
 {
 
     public class Class1
     {
-        
+
         private const string Password = "AUUKXLPQMyUUhALQGUKAmttCcRqIxCKj";
         private const string iv = "HH5UNPJAI668QM6S";
-        
+
         [Theory]
         [InlineData("1@1234.sh")]
         [InlineData("0451-55530000")]
@@ -103,7 +104,7 @@ namespace TestNgonzalez.Util
         [Fact]
         public void ShouldCleanParameterNotNull()
         {
-            
+
             var e = new ApiValidation();
             var val = e.CleanParameter<string>("nicolas");
             Assert.True(val != null);
@@ -119,8 +120,33 @@ namespace TestNgonzalez.Util
             Assert.True(val != null);
 
         }
-        /*
-        
+
+        [Fact]
+        public void ShouldInsertLogger()
+        {
+
+
+            var root = "http://localhost:32934";
+            var api = "Logger/Insert";
+
+            Func<string, LogLevel, bool> logFilter = delegate (string loggerName, LogLevel logLevel)
+          {
+              if (logLevel < LogLevel.Error) { return false; }
+
+              return true;
+          };
+
+
+
+            var log = new ApiLogger("loggerName", logFilter, null, new RestHelper(), root, api, "247482551520319919125314420", "fake");
+
+            log.Log(LogLevel.Error, 1, new object(), new Exception("Fake EXception"), (state, exception) => state.ToString());
+            Assert.True(true);
+        }
+
+
+
+
         [Fact]
         public void TestingGetRestApi()
         {
@@ -134,17 +160,7 @@ namespace TestNgonzalez.Util
             };
             var e = new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteSafe();
 
-            Assert.True(e.message =="New ApiKey" || e.message =="Renew ApiKey");
-        }
-
-        [Fact]
-        public void TestingPostRestApi()
-        {
-            var root = "http://jsonplaceholder.typicode.com";
-            var api = "posts";
-
-            var e = new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteSafe();
-            Assert.True(e.id == 101);
+            Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
         }
 
         [Fact]
@@ -160,8 +176,21 @@ namespace TestNgonzalez.Util
             };
             dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteAsync();
             Console.WriteLine(e);
-            Assert.True(e.message =="New ApiKey" || e.message =="Renew ApiKey");
+            Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
         }
+
+
+        [Fact]
+        public void TestingPostRestApi()
+        {
+            var root = "http://jsonplaceholder.typicode.com";
+            var api = "posts";
+
+            var e = new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteSafe();
+            Assert.True(e.id == 101);
+        }
+
+
 
         [Fact]
         public async Task TestingPostRestApiAsync()
@@ -169,23 +198,12 @@ namespace TestNgonzalez.Util
             var root = "http://jsonplaceholder.typicode.com";
             var api = "posts";
 
-            dynamic e =await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteAsync();
+            dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteAsync();
             Assert.True(e.id == 101);
         }
-        */
-        
-        //[Fact]
-        //public void ShouldInsertLogger()
-        //{
 
-            
-        //    var root = "http://localhost:32934";
-        //    var api = "Logger/Insert";
-        //    var log = new ApiLogger("loggerName", LogLevel.Error, null, new RestHelper(), root, api, "4323421416617522858739231", "fake");
 
-        //    log.Log(LogLevel.Error, 1, new object(), new Exception("Fake EXception"), null);
-        //    Assert.True(true);
-        //}
+
 
 
     }
