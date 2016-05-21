@@ -6,15 +6,32 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using Ngonzalez.Util.Logging;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
+
 
 namespace TestNgonzalez.Util
 {
 
     public class Class1
     {
+        TestServer GetServer()
+        {
+            var bldr = new WebHostBuilder();
+            
+            // .Configure(app => app.UseMetaWeblog("/livewriter"))
+            //.ConfigureServices( svcs => svcs.AddMetaWeblog<TestMetaWeblogService>());
+            //              logger.AddApiLogger(service.GetService<IHttpContextAccessor>(), restHelper, appSettings.Value.Logging.HostUrl, appSettings.Value.Logging.ApiUrlInsert, appSettings.Value.Logging.ApiKey,appSettings.Value.Logging.SystemID);
+
+            
+            return new TestServer(bldr);
+        }
 
         private const string Password = "AUUKXLPQMyUUhALQGUKAmttCcRqIxCKj";
         private const string iv = "HH5UNPJAI668QM6S";
+        
+        
+       
 
         [Theory]
         [InlineData("1@1234.sh")]
