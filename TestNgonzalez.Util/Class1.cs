@@ -154,10 +154,10 @@ namespace TestNgonzalez.Util
           };
 
 
-
+            Console.WriteLine("Test Logger");
             var log = new ApiLogger("loggerName", logFilter, null, new RestHelper(), root, api, "247482551520319919125314420", "fake");
 
-            log.Log(LogLevel.Error, 1, new object(), new Exception("Fake EXception"), (state, exception) => state.ToString());
+            log.Log(LogLevel.Error, 1, new Poco(), new Exception("Fake EXception"),null);
             Assert.True(true);
         }
 
