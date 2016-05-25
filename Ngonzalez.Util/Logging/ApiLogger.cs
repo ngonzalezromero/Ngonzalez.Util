@@ -38,7 +38,7 @@ namespace Ngonzalez.Util.Logging
             {
                 return;
             }
-            
+
             if (formatter == null)
                 throw new ArgumentNullException(nameof(formatter));
 
@@ -50,21 +50,29 @@ namespace Ngonzalez.Util.Logging
             var method = GetMethod();
             var thread = Thread.CurrentThread.ManagedThreadId.ToString();
             var logLev = logLevel.ToString();
-
-            _helper.UrlHost(_urlHost).UrlApi(_urlApi).HttpMethod(RestMethod.Post).RequestBody(new
+            try
             {
-                apiKey = _apiKey,
-                system = _system,
-                ipAddress = ipAddress,
-                culture = culture,
-                url = url,
-                method = method,
-                thread = thread,
-                logName = _loggerName,
-                logLevel = logLev,
-                message = message
+                _helper.UrlHost(_urlHost).UrlApi(_urlApi).HttpMethod(RestMethod.Post).RequestBody(new
+                {
+                    apiKey = _apiKey,
+                    system = _system,
+                    ipAddress = ipAddress,
+                    culture = culture,
+                    url = url,
+                    method = method,
+                    thread = thread,
+                    logName = _loggerName,
+                    logLevel = logLev,
+                    message = message
+                }
+        ).Execute();
             }
-           ).Execute();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending log. ex {ex}");
+            }
+
+
 
         }
 
