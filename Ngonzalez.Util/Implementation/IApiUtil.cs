@@ -14,5 +14,6 @@ namespace Ngonzalez.Util
         void ValidPaginationParameter<T>(int? pageIndex, int? pageSize, string column, bool? orderDescending);
         Func<T, object> GetLambda<T>(string property);
         bool IsMobileBrowser(HttpRequest request);
+        string GetExceptionDetails(Exception exception);
     }
 }

@@ -83,7 +83,7 @@ namespace Ngonzalez.Util
 #endif
 
 #if NETCOREAPP1_0
-                if (!parent.GetType().GetTypeInfo().IsValueType)
+            if (!parent.GetType().GetTypeInfo().IsValueType)
 #endif
 
 
@@ -125,7 +125,7 @@ namespace Ngonzalez.Util
 
         }
 
-         public  bool IsMobileBrowser(HttpRequest request)
+        public bool IsMobileBrowser(HttpRequest request)
         {
             var userAgent = request.Headers["User-Agent"].ToString();
             if ((b.IsMatch(userAgent) || v.IsMatch(userAgent.Substring(0, 4))))
@@ -180,6 +180,11 @@ namespace Ngonzalez.Util
                     break;
             }
             return temp;
+        }
+
+        public string GetExceptionDetails(Exception exception)
+        {
+            return $"Exception: {exception.GetType()}\r\nInnerException: {exception.InnerException}\r\nMessage: {exception.Message}\r\nStackTrace: {exception.StackTrace}";
         }
     }
 
