@@ -18,22 +18,24 @@ namespace TestNgonzalez.Util
         TestServer GetServer()
         {
             var bldr = new WebHostBuilder();
-            
+
             // .Configure(app => app.UseMetaWeblog("/livewriter"))
             //.ConfigureServices( svcs => svcs.AddMetaWeblog<TestMetaWeblogService>());
             //              logger.AddApiLogger(service.GetService<IHttpContextAccessor>(), restHelper, appSettings.Value.Logging.HostUrl, appSettings.Value.Logging.ApiUrlInsert, appSettings.Value.Logging.ApiKey,appSettings.Value.Logging.SystemID);
 
-            
+
             return new TestServer(bldr);
         }
 
         private const string Password = "AUUKXLPQMyUUhALQGUKAmttCcRqIxCKj";
         private const string iv = "HH5UNPJAI668QM6S";
-        
-        
-       
+
+
+
 
         [Theory]
+        [InlineData("1234")]
+
         [InlineData("1@1234.sh")]
         [InlineData("0451-55530000")]
         [InlineData("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")]
@@ -137,30 +139,30 @@ namespace TestNgonzalez.Util
             Assert.True(val != null);
 
         }
-
-        [Fact]
-        public void ShouldInsertLogger()
-        {
-
-
-            var root = "http://localhost:32934";
-            var api = "Logger/Insert";
-
-            Func<string, LogLevel, bool> logFilter = delegate (string loggerName, LogLevel logLevel)
-          {
-              if (logLevel < LogLevel.Error) { return false; }
-
-              return true;
-          };
+        /*
+             [Fact]
+             public void ShouldInsertLogger()
+             {
 
 
-            Console.WriteLine("Test Logger");
-            var log = new ApiLogger("loggerName", logFilter, null, new RestHelper(), root, api, "247482551520319919125314420", "fake");
+                 var root = "http://localhost:32934";
+                 var api = "Logger/Insert";
 
-            log.Log(LogLevel.Error, 1, new Poco(), new Exception("Fake EXception"),null);
-            Assert.True(true);
-        }
+                 Func<string, LogLevel, bool> logFilter = delegate (string loggerName, LogLevel logLevel)
+               {
+                   if (logLevel < LogLevel.Error) { return false; }
 
+                   return true;
+               };
+
+
+                 Console.WriteLine("Test Logger");
+                 var log = new ApiLogger("loggerName", logFilter, null, new RestHelper(), root, api, "247482551520319919125314420", "fake");
+
+                 log.Log(LogLevel.Error, 1, new Poco(), new Exception("Fake EXception"),null);
+                 Assert.True(true);
+             }
+     +
 
 
 
@@ -195,7 +197,7 @@ namespace TestNgonzalez.Util
             Console.WriteLine(e);
             Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
         }
-
+*/
 
         [Fact]
         public void TestingPostRestApi()
