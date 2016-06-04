@@ -7,6 +7,7 @@ using System.Reflection;
 using Ngonzalez.Util.CustomException;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
+using System.Diagnostics;
 
 namespace Ngonzalez.Util
 {
@@ -184,9 +185,11 @@ namespace Ngonzalez.Util
 
         public string GetExceptionDetails(Exception exception)
         {
-            return $"Exception: {exception.GetType()}\r\nInnerException: {exception.InnerException}\r\nMessage: {exception.Message}\r\nStackTrace: {exception.StackTrace}";
+            return $"Exception: {exception.GetType()}\r\nInnerException: {exception.InnerException}\r\nMessage: {exception.Message}\r\nStackTrace: {exception.StackTrace}\r\n Full Trace: {exception.ToString()}";
         }
-    }
 
+
+
+    }
 
 }

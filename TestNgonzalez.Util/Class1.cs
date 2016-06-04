@@ -8,7 +8,7 @@ using Xunit;
 using Ngonzalez.Util.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-
+using System.IO;
 
 namespace TestNgonzalez.Util
 {
@@ -139,6 +139,36 @@ namespace TestNgonzalez.Util
             Assert.True(val != null);
 
         }
+
+
+        [Fact]
+        public void GetAllException()
+        {
+
+            var e = new ApiUtil();
+
+            Exception ee = null;
+            int zero = 0;
+
+            try
+            {
+                var fail = File.OpenRead ("c:/");
+            }
+            catch (System.Exception ex)
+            {
+
+                ee = ex;
+            }
+
+
+
+            var val = e.GetExceptionDetails(ee);
+            Console.WriteLine(val);
+            Assert.True(val != null);
+
+        }
+
+
         /*
              [Fact]
              public void ShouldInsertLogger()
