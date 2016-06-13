@@ -189,10 +189,8 @@ namespace Ngonzalez.Util
             return $"Exception: {exception.GetType()}\r\nInnerException: {exception.InnerException}\r\nMessage: {exception.Message}\r\nStackTrace: {exception.StackTrace}\r\n Full Trace: {exception.ToString()}";
         }
 
-        public string GetRemoteInfo(HttpContext httpContext)
+        public string GetRemoteInfo(IHttpRequestFeature request,IHttpConnectionFeature connection)
         {
-            var request = httpContext?.Features?.Get<IHttpRequestFeature>();
-            var connection = httpContext?.Features?.Get<IHttpConnectionFeature>();
             return $" [Request.Path :'{request?.Path}'],[Request.Method:'{request?.Method}'],[Request.RemoteIpAddress:'{connection?.RemoteIpAddress}'],[Request.RemotePort:'{connection?.RemoteIpAddress}'],[Request.UserAgent :'{request?.Headers["User-Agent"]}']";
         }
 

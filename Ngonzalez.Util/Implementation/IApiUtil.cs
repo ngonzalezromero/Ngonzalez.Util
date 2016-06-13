@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Ngonzalez.Util
 {
@@ -15,6 +16,6 @@ namespace Ngonzalez.Util
         Func<T, object> GetLambda<T>(string property);
         bool IsMobileBrowser(HttpRequest request);
         string GetExceptionDetails(Exception exception);
-        string GetRemoteInfo(HttpContext httpContext);
+        string GetRemoteInfo(IHttpRequestFeature request,IHttpConnectionFeature connection);
     }
 }
