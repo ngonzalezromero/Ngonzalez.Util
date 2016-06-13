@@ -1,5 +1,5 @@
 {
-  "version": "1.2.13",
+  "version": "1.2.14",
   "description": "Ngonzalez.Util",
   "authors": [
     "Nicolas Gonzalez (ngonzalezromero@gmail.com)"
@@ -20,9 +20,7 @@
   "frameworks": {
     "netcoreapp1.0": {
      "imports": [
-        "dotnet5.6",
-        "dnxcore50",
-        "portable-net45+win8+wp8"
+        "dnxcore50"
       ]
     },
     "net451": {

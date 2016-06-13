@@ -15,5 +15,6 @@ namespace Ngonzalez.Util
         Func<T, object> GetLambda<T>(string property);
         bool IsMobileBrowser(HttpRequest request);
         string GetExceptionDetails(Exception exception);
+        string GetRemoteInfo(HttpContext httpContext);
     }
 }
