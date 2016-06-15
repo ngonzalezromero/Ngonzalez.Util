@@ -1,5 +1,9 @@
 ﻿using System;
+using System.IO;
+using System.Text;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 
 namespace Ngonzalez.Util
 {
@@ -10,48 +14,47 @@ namespace Ngonzalez.Util
             return cache.Set(key, value, new MemoryCacheEntryOptions().SetAbsoluteExpiration(time));
         }
 
+        public static void SetWithAbsolute(this IDistributedCache cache, string key, object value, TimeSpan time)
+        {
+            if (value != null)
+            {
+                cache.Set(key, value.Serializer(), new DistributedCacheEntryOptions().SetAbsoluteExpiration(time));
+            }
+        }
 
-        //public static void SetWithAbsolute(this IDistributedCache cache, string key, object value, TimeSpan time)
-        //{
-        //    if(value != null)
-        //    {
-        //        cache.Set(key, value.Serializer(), new DistributedCacheEntryOptions().SetAbsoluteExpiration(time));
-        //    }    
-        //}
+        public static bool TryGetValue<T>(this IDistributedCache cache, string key, out T value)
+        {
+            try
+            {
+                value = Deserializer<T>(cache.Get(key));
+                return true;
+            }
+            catch (Exception)
+            {
+                value = default(T);
+                return false;
+            }
+        }
 
-        //public static bool TryGetValue<T>(this IDistributedCache cache, string key, out T value)
-        //{
-        //    try
-        //    {
-        //        value = Deserializer<T>(cache.Get(key));
-        //        return true;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        value = default(T);
-        //        return false;
-        //    }
-        //}
+        private static byte[] Serializer(this object value)
+        {
+            var json = JsonConvert.SerializeObject(value, Formatting.None);
 
-        //private static byte[] Serializer(this object value)
-        //{
-        //    byte[] bytes;
-        //    using (var memoryStream = new MemoryStream())
-        //    {
-        //        IFormatter binaryFormatter = new BinaryFormatter();
-        //        binaryFormatter.Serialize(memoryStream, value);
-        //        bytes = memoryStream.ToArray();
+            byte[] bytes;
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
+                binaryWriter.Write(json);
+                bytes = memoryStream.ToArray();
+            }
+            return bytes;
+        }
 
-        //    }
-        //    return bytes;
-        //}
+        private static T Deserializer<T>(this byte[] byteArray)
+        {
+            var json = Encoding.UTF8.GetString(byteArray);
+            return JsonConvert.DeserializeObject<T>(json);
+        }
 
-        //private static T Deserializer<T>(this byte[] byteArray)
-        //{
-        //    using (var memoryStream = new MemoryStream(byteArray))
-        //    {
-        //        return (T)new BinaryFormatter().Deserialize(memoryStream);
-        //    }
-        //}
     }
 }
