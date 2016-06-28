@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Ngonzalez.Util",
   "authors": [
     "Nicolas Gonzalez (ngonzalezromero@gmail.com)"
@@ -15,7 +15,7 @@
     "Microsoft.AspNetCore.Hosting": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Ngonzalez.HtmlAgilityPack": "2.0.0",
-    "System.Net.Http": "4.1.0"
+    "NETStandard.Library" : "1.6.0"
   },
   "frameworks": {
     "netcoreapp1.0": {
