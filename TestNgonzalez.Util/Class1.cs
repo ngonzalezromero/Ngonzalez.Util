@@ -1,37 +1,20 @@
-﻿using Microsoft.Extensions.Logging;
-using Ngonzalez.Util;
+﻿using Ngonzalez.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-using Ngonzalez.Util.Logging;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
 using System.IO;
+using Ngonzalez.Util.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace TestNgonzalez.Util
 {
 
     public class Class1
     {
-        TestServer GetServer()
-        {
-            var bldr = new WebHostBuilder();
-
-            // .Configure(app => app.UseMetaWeblog("/livewriter"))
-            //.ConfigureServices( svcs => svcs.AddMetaWeblog<TestMetaWeblogService>());
-            //              logger.AddApiLogger(service.GetService<IHttpContextAccessor>(), restHelper, appSettings.Value.Logging.HostUrl, appSettings.Value.Logging.ApiUrlInsert, appSettings.Value.Logging.ApiKey,appSettings.Value.Logging.SystemID);
-
-
-            return new TestServer(bldr);
-        }
-
         private const string Password = "AUUKXLPQMyUUhALQGUKAmttCcRqIxCKj";
         private const string iv = "HH5UNPJAI668QM6S";
-
-
-
 
         [Theory]
         [InlineData("1234")]
@@ -94,11 +77,8 @@ namespace TestNgonzalez.Util
             {
                 list.Add(e.GeneratePassword());
             }
-
             var check = list.All(x => !string.IsNullOrWhiteSpace(x));
-
             var checkLength = list.All(x => x.Length <= 15);
-
             Assert.True(check);
             Assert.True(checkLength);
         }
@@ -107,7 +87,6 @@ namespace TestNgonzalez.Util
         public void ShouldBeFailALAmbda()
         {
             var e = new ApiUtil();
-
             Assert.Throws<ArgumentException>(() => e.GetLambda<Poco>("Idu"));
         }
 
@@ -115,53 +94,41 @@ namespace TestNgonzalez.Util
         public void ShouldBeNotFailALAmbda()
         {
             var e = new ApiUtil();
-            var lambda = e.GetLambda<Poco>("Id");
+            var lambda = e.GetLambda<Poco>("Date");
             Assert.True(true);
-
         }
 
         [Fact]
         public void ShouldCleanParameterNotNull()
         {
-
             var e = new ApiValidation();
             var val = e.CleanParameter<string>("nicolas");
             Assert.True(val != null);
-
         }
 
         [Fact]
         public void ShouldCleanParameterSameEquals()
         {
-
             var e = new ApiValidation();
             var val = e.CleanParameter<string>("nicolas");
             Assert.True(val != null);
-
         }
 
 
         [Fact]
         public void GetAllException()
         {
-
             var e = new ApiUtil();
-
             Exception ee = null;
             int zero = 0;
-
             try
             {
-                var fail = File.OpenRead ("c:/");
+                var fail = File.OpenRead("c:/");
             }
             catch (System.Exception ex)
             {
-
                 ee = ex;
             }
-
-
-
             var val = e.GetExceptionDetails(ee);
             Console.WriteLine(val);
             Assert.True(val != null);
@@ -169,65 +136,60 @@ namespace TestNgonzalez.Util
         }
 
 
+
+        [Fact]
+        public void ShouldInsertLogger()
+        {
+            var root = "http://localhost:32934";
+            var api = "Logger/Insert";
+
+            Func<Poco, Exception, string> logFilter = (Poco p, Exception logLevel) =>
+            {
+               
+                return "";
+            };
+
+            Console.WriteLine("Test Logger");
+            var log = new ApiLogger(LogLevel.Error, "loggerName", null, new RestHelper(), root, api, "22410613140124249126217019", "test");
+            log.Log(LogLevel.Error, 1, new Poco(), new Exception("Fake EXception"), logFilter);
+            Assert.True(true);
+        }
         /*
-             [Fact]
-             public void ShouldInsertLogger()
-             {
-
-
-                 var root = "http://localhost:32934";
-                 var api = "Logger/Insert";
-
-                 Func<string, LogLevel, bool> logFilter = delegate (string loggerName, LogLevel logLevel)
-               {
-                   if (logLevel < LogLevel.Error) { return false; }
-
-                   return true;
-               };
-
-
-                 Console.WriteLine("Test Logger");
-                 var log = new ApiLogger("loggerName", logFilter, null, new RestHelper(), root, api, "247482551520319919125314420", "fake");
-
-                 log.Log(LogLevel.Error, 1, new Poco(), new Exception("Fake EXception"),null);
-                 Assert.True(true);
-             }
-     +
 
 
 
-        [Fact]
-        public void TestingGetRestApi()
-        {
-            var root = "http://localhost:32934";
-            var api = "Logger/GenerateApiKey";
+          [Fact]
+          public void TestingGetRestApi()
+          {
+              var root = "http://localhost:32934";
+              var api = "Logger/GenerateApiKey";
 
-            var param = new Dictionary<string, string>
-            {
-                {"system", "dnxtest"}
+              var param = new Dictionary<string, string>
+              {
+                  {"system", "dnxtest"}
 
-            };
-            var e = new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteSafe();
+              };
+              var e = new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteSafe();
 
-            Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
-        }
+              Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
+          }
 
-        [Fact]
-        public async Task TestingGetRestApiAsync()
-        {
-            var root = "http://localhost:32934";
-            var api = "Logger/GenerateApiKey";
+          [Fact]
+          public async Task TestingGetRestApiAsync()
+          {
+              var root = "http://localhost:32934";
+              var api = "Logger/GenerateApiKey";
 
-            var param = new Dictionary<string, string>
-            {
-                {"system", "dnxtest"}
+              var param = new Dictionary<string, string>
+              {
+                  {"system", "dnxtest"}
 
-            };
-            dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteAsync();
-            Console.WriteLine(e);
-            Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
-        }
-*/
+              };
+              dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteAsync();
+              Console.WriteLine(e);
+              Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
+          }
+  
 
         [Fact]
         public void TestingPostRestApi()
@@ -250,17 +212,16 @@ namespace TestNgonzalez.Util
             dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteAsync();
             Assert.True(e.id == 101);
         }
-
-
-
-
+        */
 
     }
 
 
-    public class Poco
+    internal class Poco
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public DateTime Date { get; set; }
     }
+
 }

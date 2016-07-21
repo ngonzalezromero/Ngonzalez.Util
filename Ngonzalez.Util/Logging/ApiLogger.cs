@@ -52,28 +52,27 @@ namespace Ngonzalez.Util.Logging
             var logLev = logLevel.ToString();
             try
             {
-                _helper.UrlHost(_urlHost).UrlApi(_urlApi).HttpMethod(RestMethod.Post).RequestBody(new
+
+                var apilog = new ApiLog();
+                apilog.ApiKey = _apiKey;
+                apilog.System = _system;
+                apilog.LogType = new SystemLog()
                 {
-                    apiKey = _apiKey,
-                    system = _system,
-                    ipAddress = ipAddress,
-                    culture = culture,
-                    url = url,
-                    method = method,
-                    thread = thread,
-                    logName = _loggerName,
-                    logLevel = logLev,
-                    message = message
-                }
-        ).Execute();
+                    IpAddress = ipAddress,
+                    Culture = culture,
+                    Url = url,
+                    Method = method,
+                    Thread = thread,
+                    LogName = _loggerName,
+                    LogLevel = logLev,
+                    Message = message
+                };
+                _helper.UrlHost(_urlHost).UrlApi(_urlApi).HttpMethod(RestMethod.Post).RequestBody(apilog).Execute();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error sending log. ex {ex}");
             }
-
-
-
         }
 
         public bool IsEnabled(LogLevel logLevel)
@@ -111,6 +110,26 @@ namespace Ngonzalez.Util.Logging
             public void Dispose()
             {
             }
+        }
+
+        internal class ApiLog
+        {
+            public string ApiKey { get; set; }
+            public string System { get; set; }
+            public SystemLog LogType { get; set; }
+        }
+
+        internal class SystemLog
+        {
+            public string IpAddress { get; set; }
+            public string Culture { get; set; }
+            public string Url { get; set; }
+            public string Method { get; set; }
+            public string Thread { get; set; }
+            public string LogName { get; set; }
+            public string LogLevel { get; set; }
+            public DateTime Date { get; set; }
+            public string Message { get; set; }
         }
     }
 }

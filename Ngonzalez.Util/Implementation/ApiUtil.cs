@@ -7,7 +7,6 @@ using System.Reflection;
 using Ngonzalez.Util.CustomException;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 
 namespace Ngonzalez.Util
@@ -73,28 +72,12 @@ namespace Ngonzalez.Util
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
-        public Func<T, object> GetLambda<T>(string property)
+        public Expression<Func<T, object>> GetLambda<T>(string property)
         {
             var param = Expression.Parameter(typeof(T), "p");
-
             Expression parent = Expression.Property(param, property);
-
-
-#if NET451
-            if (!parent.Type.IsValueType)
-#endif
-
-#if NETCOREAPP1_0
-            if (!parent.GetType().GetTypeInfo().IsValueType)
-#endif
-
-
-
-            {
-                return Expression.Lambda<Func<T, object>>(parent, param).Compile();
-            }
             var convert = Expression.Convert(parent, typeof(object));
-            return Expression.Lambda<Func<T, object>>(convert, param).Compile();
+            return Expression.Lambda<Func<T, object>>(convert, param);
         }
 
 
@@ -189,7 +172,7 @@ namespace Ngonzalez.Util
             return $"Exception: {exception.GetType()}\r\nInnerException: {exception.InnerException}\r\nMessage: {exception.Message}\r\nStackTrace: {exception.StackTrace}\r\n Full Trace: {exception.ToString()}";
         }
 
-        public string GetRemoteInfo(IHttpRequestFeature request,IHttpConnectionFeature connection)
+        public string GetRemoteInfo(IHttpRequestFeature request, IHttpConnectionFeature connection)
         {
             return $" [Request.Path :'{request?.Path}'],[Request.Method:'{request?.Method}'],[Request.RemoteIpAddress:'{connection?.RemoteIpAddress}'],[Request.RemotePort:'{connection?.RemoteIpAddress}'],[Request.UserAgent :'{request?.Headers["User-Agent"]}']";
         }

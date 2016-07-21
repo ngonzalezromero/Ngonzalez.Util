@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 
@@ -13,7 +14,7 @@ namespace Ngonzalez.Util
         string GenerateUserKey();
         string GetMonthName(int month);
         void ValidPaginationParameter<T>(int? pageIndex, int? pageSize, string column, bool? orderDescending);
-        Func<T, object> GetLambda<T>(string property);
+        Expression<Func<T, object>> GetLambda<T>(string property);
         bool IsMobileBrowser(HttpRequest request);
         string GetExceptionDetails(Exception exception);
         string GetRemoteInfo(IHttpRequestFeature request,IHttpConnectionFeature connection);

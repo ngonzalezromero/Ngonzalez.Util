@@ -1,5 +1,5 @@
 {
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Ngonzalez.Util",
   "authors": [
     "Nicolas Gonzalez (ngonzalezromero@gmail.com)"
@@ -22,11 +22,6 @@
      "imports": [
         "dnxcore50"
       ]
-    },
-    "net451": {
-      "dependencies": {
-        
-      }
     }
   }
 }
