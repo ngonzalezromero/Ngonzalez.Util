@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Ngonzalez.Util
 {
@@ -11,5 +12,7 @@ namespace Ngonzalez.Util
         bool ValidatePhone(string text, int length);
         bool IsNumber(string text);
         bool ValidateRut(string rut);
+        string SanitizeFileName(string input);
+        bool CheckFileExtension(string fileName, List<string> extension);
     }
 }

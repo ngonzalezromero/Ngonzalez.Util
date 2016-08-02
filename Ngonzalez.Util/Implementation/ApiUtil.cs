@@ -13,7 +13,6 @@ namespace Ngonzalez.Util
 {
     public sealed class ApiUtil : IApiUtil
     {
-
         private const string AllowedChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@$?_-";
         private const byte MaxLength = 15;
 
@@ -79,7 +78,7 @@ namespace Ngonzalez.Util
             var convert = Expression.Convert(parent, typeof(object));
             return Expression.Lambda<Func<T, object>>(convert, param);
         }
-
+       
 
         public void ValidPaginationParameter<T>(int? pageIndex, int? pageSize, string column, bool? orderDescending)
         {

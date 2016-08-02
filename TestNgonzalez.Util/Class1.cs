@@ -35,6 +35,59 @@ namespace TestNgonzalez.Util
             Assert.True(str == decript);
         }
 
+        [Theory]
+        [InlineData("file<name .docx")]
+        [InlineData("*@123\\|?4.sh")]
+        [InlineData("g?gd dg.xlsx")]
+        [InlineData("g?gd dg.xls<x")]
+        [InlineData("g? gd *dg.xl?s<x")]
+
+
+        public void shoulCleanFileName(string str)
+        {
+            var e = new ApiValidation();
+            var decript = e.SanitizeFileName(str);
+            Console.WriteLine(decript);
+            Assert.True(decript != str);
+
+        }
+
+        [Theory]
+        [InlineData("file<name .docx")]
+        [InlineData("*@123\\|?4.jpg")]
+        [InlineData("g?gd dg.xlsx")]
+        [InlineData("g?gd dg.xls")]
+        [InlineData("g? gd *dg.do<c")]
+
+
+        public void shoulNotFailExtension(string str)
+        {
+            var e = new ApiValidation();
+            var decript = e.SanitizeFileName(str);
+            var r = e.CheckFileExtension(decript, new List<string>() { "docx", "jpg", "xlsx", "xls", "doc" });
+            Assert.True(r);
+        }
+
+
+        [Theory]
+        [InlineData("file<name .docx")]
+        [InlineData("*@123\\|?4.jpg")]
+        [InlineData("g?gd dg.xlsx")]
+        [InlineData("g?gd dg.xls")]
+        [InlineData("g? gd *dg.do<c")]
+
+
+        public void shoulFailExtension(string str)
+        {
+            var e = new ApiValidation();
+            var decript = e.SanitizeFileName(str);
+            var r = e.CheckFileExtension(decript, new List<string>() { "png" });
+            Assert.False(r);
+        }
+
+
+
+
         [Fact]
         public void ShouldBeANumberApiKey()
         {
@@ -130,89 +183,88 @@ namespace TestNgonzalez.Util
                 ee = ex;
             }
             var val = e.GetExceptionDetails(ee);
-            Console.WriteLine(val);
             Assert.True(val != null);
 
         }
 
-
-
-        [Fact]
-        public void ShouldInsertLogger()
-        {
-            var root = "http://localhost:32934";
-            var api = "Logger/Insert";
-
-            Func<Poco, Exception, string> logFilter = (Poco p, Exception logLevel) =>
-            {
-               
-                return "";
-            };
-
-            Console.WriteLine("Test Logger");
-            var log = new ApiLogger(LogLevel.Error, "loggerName", null, new RestHelper(), root, api, "22410613140124249126217019", "test");
-            log.Log(LogLevel.Error, 1, new Poco(), new Exception("Fake EXception"), logFilter);
-            Assert.True(true);
-        }
         /*
 
+               [Fact]
+               public void ShouldInsertLogger()
+               {
+                   var root = "http://localhost:32934";
+                   var api = "Logger/Insert";
 
+                   Func<Poco, Exception, string> logFilter = (Poco p, Exception logLevel) =>
+                   {
 
-          [Fact]
-          public void TestingGetRestApi()
-          {
-              var root = "http://localhost:32934";
-              var api = "Logger/GenerateApiKey";
+                       return "";
+                   };
 
-              var param = new Dictionary<string, string>
-              {
-                  {"system", "dnxtest"}
-
-              };
-              var e = new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteSafe();
-
-              Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
-          }
-
-          [Fact]
-          public async Task TestingGetRestApiAsync()
-          {
-              var root = "http://localhost:32934";
-              var api = "Logger/GenerateApiKey";
-
-              var param = new Dictionary<string, string>
-              {
-                  {"system", "dnxtest"}
-
-              };
-              dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteAsync();
-              Console.WriteLine(e);
-              Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
-          }
-  
-
-        [Fact]
-        public void TestingPostRestApi()
-        {
-            var root = "http://jsonplaceholder.typicode.com";
-            var api = "posts";
-
-            var e = new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteSafe();
-            Assert.True(e.id == 101);
-        }
+                   Console.WriteLine("Test Logger");
+                   var log = new ApiLogger(LogLevel.Error, "loggerName", null, new RestHelper(), root, api, "22410613140124249126217019", "test");
+                   log.Log(LogLevel.Error, 1, new Poco(), new Exception("Fake EXception"), logFilter);
+                   Assert.True(true);
+               }
 
 
 
-        [Fact]
-        public async Task TestingPostRestApiAsync()
-        {
-            var root = "http://jsonplaceholder.typicode.com";
-            var api = "posts";
 
-            dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteAsync();
-            Assert.True(e.id == 101);
-        }
-        */
+                 [Fact]
+                 public void TestingGetRestApi()
+                 {
+                     var root = "http://localhost:32934";
+                     var api = "Logger/GenerateApiKey";
+
+                     var param = new Dictionary<string, string>
+                     {
+                         {"system", "dnxtest"}
+
+                     };
+                     var e = new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteSafe();
+
+                     Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
+                 }
+
+                 [Fact]
+                 public async Task TestingGetRestApiAsync()
+                 {
+                     var root = "http://localhost:32934";
+                     var api = "Logger/GenerateApiKey";
+
+                     var param = new Dictionary<string, string>
+                     {
+                         {"system", "dnxtest"}
+
+                     };
+                     dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteAsync();
+                     Console.WriteLine(e);
+                     Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
+                 }
+
+
+               [Fact]
+               public void TestingPostRestApi()
+               {
+                   var root = "http://jsonplaceholder.typicode.com";
+                   var api = "posts";
+
+                   var e = new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteSafe();
+                   Assert.True(e.id == 101);
+               }
+
+
+
+               [Fact]
+               public async Task TestingPostRestApiAsync()
+               {
+                   var root = "http://jsonplaceholder.typicode.com";
+                   var api = "posts";
+
+                   dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteAsync();
+                   Assert.True(e.id == 101);
+               }
+               */
 
     }
 

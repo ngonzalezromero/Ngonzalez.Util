@@ -1,16 +1,47 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 
 namespace Ngonzalez.Util
 {
-    public class ApiValidation :IApiValidation
+    public class ApiValidation : IApiValidation
     {
+        private readonly static char[] InvalidFilenameChars = System.IO.Path.GetInvalidFileNameChars();
+        private static readonly Regex InvalidFileRegex = new Regex(string.Format("[{0}]", Regex.Escape(@"<>:""/\|?!)(*")));
+
+        public string SanitizeFileName(string input)
+        {
+            if (input == null) { return null; }
+            StringBuilder result = new StringBuilder();
+            foreach (var characterToTest in input)
+            {
+                if (Array.BinarySearch(InvalidFilenameChars, characterToTest) >= 0)
+                {
+                    result.Append('_');
+                }
+                else
+                {
+                    result.Append(characterToTest);
+                }
+            }
+            var regex = InvalidFileRegex.Replace(result.ToString(), string.Empty);
+            return string.Join("", regex.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+        }
+
+        public bool CheckFileExtension(string fileName, List<string> extension)
+        {
+            var ext = fileName.Split('.').Last();
+            return extension.Contains(ext);
+        }
+
+
         public T CleanParameter<T>(T data) where T : IConvertible
         {
             var temp = AntiXSS.Sanitize(data.ToString(CultureInfo.InvariantCulture));
-
             return ((T)(Convert.ChangeType(temp, typeof(T))));
         }
 
