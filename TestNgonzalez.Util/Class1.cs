@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 using System.IO;
-using Ngonzalez.Util.Logging;
-using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Flurl.Http;
+using Ngonzalez.Util.Implementation;
 
 namespace TestNgonzalez.Util
 {
@@ -15,6 +16,141 @@ namespace TestNgonzalez.Util
     {
         private const string Password = "AUUKXLPQMyUUhALQGUKAmttCcRqIxCKj";
         private const string iv = "HH5UNPJAI668QM6S";
+
+        private static FlurlClient fc = new FlurlClient();
+
+        private static HttpClient m = new HttpClient();
+
+        private RestHelper rest = new RestHelper(fc);
+
+        [Fact]
+        public void TestStringBuilderCache()
+        {
+            var str = "[hola]";
+
+            var builder = StringBuilderCache.AcquireBuilder();
+            builder.Append(str);
+            builder.Replace("[", "").Replace("]", "");
+            Assert.True("hola" == StringBuilderCache.GetStringAndReleaseBuilder(builder));
+        }
+
+        [Fact]
+        public void shoulbeSameUrl()
+        {
+
+            var e = new ApiUtil();
+
+            for (int i = 0; i < 200000; i++)
+            {
+                var url = $"*{DateTime.Now}*{e.GenerateUserKey()}*ngonzalezromero@gmail.com";
+
+                var encript = $"{e.EncriptUrl(url, Password, iv)}";
+                var decript = e.DecryptUrl(encript, Password, iv);
+                Assert.True(encript != null);
+                Assert.True(decript != null);
+                Assert.False(encript.Contains("+"));
+                Assert.False(encript.Contains("/"));
+                Assert.False(encript.Contains("="));
+                Assert.True(url == decript);
+                Assert.True(url == decript);
+
+                var urlSplit = url.Split(new char[] { '*' });
+                var urlDescriptSplit = decript.Split(new char[] { '*' });
+                Assert.True(urlSplit[1] == urlDescriptSplit[1]);
+                Assert.True(urlSplit[3].Contains('@'));
+            }
+        }
+
+        [Fact]
+        public void ShouldPasswordNotSpecialCharacters()
+        {
+            var util = new ApiUtil();
+            for (int i = 0; i < 1000; i++)
+            {
+                var password = util.GeneratePassword();
+                Console.WriteLine(password);
+                Assert.False(password.Contains("+"));
+                Assert.False(password.Contains("/"));
+
+            }
+        }
+
+        [Fact]
+        public void TestSerializacion()
+        {
+            var poco = new Poco { Id = "1", Name = "Nicolas", Date = DateTime.Now };
+
+            var one = CacheUtilExtensions.Serializer(poco);
+            var two = CacheUtilExtensions.Deserializer<Poco>(one);
+            Assert.True(poco.Id == two.Id);
+            Assert.True(poco.Name == two.Name);
+            Assert.True(poco.Date == two.Date);
+        }
+
+        [Fact]
+        public async Task TestEmail()
+        {
+            var email = await new AsyncMail()
+                 .SmtpUser("inforeader")
+                 .SmtpHost("mail.amtc.cl")
+                 .SmtpPort(587)
+                 .SmtpPassword("info$$00")
+                 .Addresses(new List<string>() { "ngonzalezromero@gmail.com" })
+                 .Body("Test")
+                 .Cc("Nicolas.Gonzalez@csiro.au")
+                 .SenderAddress("inforeader@amtc.cl")
+                 .SenderName("Test User")
+                 .Subject("Testing")
+                 .BuildMailAsync();
+
+            Assert.True(email);
+        }
+
+        [Fact]
+        public async Task TestWeather()
+        {
+            var param = new Dictionary<string, dynamic>
+                    {
+                        {"Apikey","2a09ef377ac9619827a05819dbcbb815"},
+                        {"latitude", "-22.3208804,-68.9033803"},
+                    };
+
+            dynamic json = await rest.UrlHost("https://api.forecast.io")
+                   .UrlApi($"forecast")
+                   .HttpMethod(RestMethod.Get)
+                   .RequestParameter(param)
+                   .SetQueryParam("units", "ca")
+                   .ExecuteAsync();
+
+            Assert.True(json != null);
+        }
+        /*
+
+        [Fact]
+        public async Task TestingPostRestApi()
+        {
+            FlurlClient fc = new FlurlClient();
+            var root = "http://localhost:51101";
+            var api = "api/v1/system/testdbconnection";
+            var list = new List<Task>();
+            var param = new Dictionary<string, dynamic> { { "param", "param" } };
+
+            for (int i = 0; i < 325; i++)
+            {
+                list.Add(rest.UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteAsync());
+
+            }
+            await Task.WhenAll(list.ToArray());
+
+            int count = 0;
+            foreach (Task<dynamic> item in list)
+            {
+                string p = item.Result;
+                Console.WriteLine(p);
+                Console.WriteLine(count++);
+            }
+        }
+        */
 
         [Theory]
         [InlineData("1234")]
@@ -47,7 +183,6 @@ namespace TestNgonzalez.Util
         {
             var e = new ApiValidation();
             var decript = e.SanitizeFileName(str);
-            Console.WriteLine(decript);
             Assert.True(decript != str);
 
         }
@@ -173,7 +308,6 @@ namespace TestNgonzalez.Util
         {
             var e = new ApiUtil();
             Exception ee = null;
-            int zero = 0;
             try
             {
                 var fail = File.OpenRead("c:/");
@@ -187,84 +321,24 @@ namespace TestNgonzalez.Util
 
         }
 
-        /*
+        [Fact]
+        public void TestingPostRestApi2()
+        {
+            var root = "http://jsonplaceholder.typicode.com";
+            var api = "posts";
 
-               [Fact]
-               public void ShouldInsertLogger()
-               {
-                   var root = "http://localhost:32934";
-                   var api = "Logger/Insert";
+            var e = rest.UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteSafe();
+            Assert.True(e.id == 101);
+        }
 
-                   Func<Poco, Exception, string> logFilter = (Poco p, Exception logLevel) =>
-                   {
+        [Fact]
+        public async Task TestingPostRestApiAsync()
+        {
+            var root = "http://jsonplaceholder.typicode.com";
+            var api = "posts";
+            dynamic e = await rest.UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteAsync();
 
-                       return "";
-                   };
-
-                   Console.WriteLine("Test Logger");
-                   var log = new ApiLogger(LogLevel.Error, "loggerName", null, new RestHelper(), root, api, "22410613140124249126217019", "test");
-                   log.Log(LogLevel.Error, 1, new Poco(), new Exception("Fake EXception"), logFilter);
-                   Assert.True(true);
-               }
-
-
-
-
-                 [Fact]
-                 public void TestingGetRestApi()
-                 {
-                     var root = "http://localhost:32934";
-                     var api = "Logger/GenerateApiKey";
-
-                     var param = new Dictionary<string, string>
-                     {
-                         {"system", "dnxtest"}
-
-                     };
-                     var e = new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteSafe();
-
-                     Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
-                 }
-
-                 [Fact]
-                 public async Task TestingGetRestApiAsync()
-                 {
-                     var root = "http://localhost:32934";
-                     var api = "Logger/GenerateApiKey";
-
-                     var param = new Dictionary<string, string>
-                     {
-                         {"system", "dnxtest"}
-
-                     };
-                     dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Get).RequestParameter(param).ExecuteAsync();
-                     Console.WriteLine(e);
-                     Assert.True(e.message == "New ApiKey" || e.message == "Renew ApiKey");
-                 }
-
-
-               [Fact]
-               public void TestingPostRestApi()
-               {
-                   var root = "http://jsonplaceholder.typicode.com";
-                   var api = "posts";
-
-                   var e = new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteSafe();
-                   Assert.True(e.id == 101);
-               }
-
-
-
-               [Fact]
-               public async Task TestingPostRestApiAsync()
-               {
-                   var root = "http://jsonplaceholder.typicode.com";
-                   var api = "posts";
-
-                   dynamic e = await new RestHelper().UrlHost(root).UrlApi(api).HttpMethod(RestMethod.Post).RequestBody(new { title = "foo", body = "bar", userId = "1" }).ExecuteAsync();
-                   Assert.True(e.id == 101);
-               }
-               */
+        }
 
     }
 

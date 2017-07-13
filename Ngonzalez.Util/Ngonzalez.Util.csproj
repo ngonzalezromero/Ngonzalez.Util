@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Ngonzalez.Util</Description>
+    <VersionPrefix>5.0.0-beta1</VersionPrefix>
+    <Authors>Nicolas Gonzalez (ngonzalezromero@gmail.com)</Authors>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Ngonzalez.Util</AssemblyName>
+    <PackageId>Ngonzalez.Util</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ngonzalez.HtmlAgilityPack" Version="3.0.0" />
+    <PackageReference Include="Flurl" Version="2.3.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0-preview2-final" />
+    <PackageReference Include="Flurl.Http" Version="1.1.2" />
+    <PackageReference Include="MailKit" Version="1.16.2" />
+  </ItemGroup>
+</Project>

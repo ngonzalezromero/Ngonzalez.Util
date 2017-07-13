@@ -9,6 +9,8 @@ namespace Ngonzalez.Util
     {
         string DecryptData(string cipherText, string seed, string iv);
         string EncriptData(string plainText, string seed, string iv);
+        string DecryptUrl(string cipherText, string seed, string iv);
+        string EncriptUrl(string plainText, string seed, string iv);
         string GenerateApiKey();
         string GeneratePassword();
         string GenerateUserKey();
@@ -17,6 +19,7 @@ namespace Ngonzalez.Util
         Expression<Func<T, object>> GetLambda<T>(string property);
         bool IsMobileBrowser(HttpRequest request);
         string GetExceptionDetails(Exception exception);
-        string GetRemoteInfo(IHttpRequestFeature request,IHttpConnectionFeature connection);
+        string GetRemoteInfo(IHttpRequestFeature request, IHttpConnectionFeature connection);
+        string DateTimeToText(DateTime date);
     }
 }

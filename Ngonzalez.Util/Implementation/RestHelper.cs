@@ -1,36 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
+using Flurl.Http;
+using Flurl;
 
 namespace Ngonzalez.Util
 {
     public sealed class RestHelper : IRestHelper
     {
-        private string _apiUrl;
         private string _hostUrl;
-        private dynamic _json;
+        private object _json;
         private RestMethod _restMethod;
-        private HttpClient _httpClient;
-        private Dictionary<string, string> _parameter;
+        private FlurlClient _httpClient;
+        private Url url;
+        private static JObject _jsobject = new JObject();
 
+        public RestHelper(FlurlClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
 
         public IRestHelper UrlHost(string hostUrl)
         {
-            _httpClient = new HttpClient();
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
             _hostUrl = hostUrl;
             return this;
         }
 
         public IRestHelper UrlApi(string apiUrl)
         {
-            _apiUrl = apiUrl;
+            url = _hostUrl.AppendPathSegment(apiUrl);
             return this;
         }
 
@@ -40,9 +40,21 @@ namespace Ngonzalez.Util
             return this;
         }
 
-        public IRestHelper RequestParameter(Dictionary<string, string> parameter)
+        public IRestHelper RequestParameter(Dictionary<string, dynamic> parameter)
         {
-            _parameter = parameter;
+            var builder = new StringBuilder(parameter.Count);
+            foreach (var param in parameter)
+            {
+                builder.Append($"/{param.Value}");
+            }
+
+            url.AppendPathSegments(builder.ToString());
+            return this;
+        }
+
+        public IRestHelper SetQueryParam(string key, dynamic data)
+        {
+            url.SetQueryParam(key, data);
             return this;
         }
 
@@ -52,31 +64,6 @@ namespace Ngonzalez.Util
             return this;
         }
 
-        private dynamic DeserializeToJson(string content)
-        {
-            return JsonConvert.DeserializeObject<dynamic>(content);
-        }
-
-        private StringContent ConvertObjectToJson()
-        {
-            var t = new StringContent(JsonConvert.SerializeObject(_json), Encoding.UTF8, "application/json");
-            return t;
-        }
-
-        private string AddParameters()
-        {
-            var builder = new StringBuilder(_parameter.Count);
-            foreach (var param in _parameter)
-            {
-                builder.Append($"/{param.Value}");
-            }
-            return builder.ToString();
-        }
-
-        private string CreateUrl()
-        {
-            return $"{_hostUrl}/{_apiUrl}";
-        }
 
         public dynamic ExecuteSafe()
         {
@@ -86,7 +73,7 @@ namespace Ngonzalez.Util
             }
             catch (Exception)
             {
-                return new JObject();
+                return _jsobject;
             }
         }
 
@@ -99,16 +86,11 @@ namespace Ngonzalez.Util
         {
             if (_restMethod == RestMethod.Get)
             {
-
-                var response = await _httpClient.GetAsync(new Uri($"{CreateUrl()}{AddParameters()}"));
-                return DeserializeToJson(await response.Content.ReadAsStringAsync());
+                return await url.WithClient(_httpClient).GetAsync().ReceiveJson<dynamic>().ConfigureAwait(false); ;
             }
             else
             {
-                var e = $"{_hostUrl}/{_apiUrl}/";
-
-                var response = await _httpClient.PostAsync(new Uri($"{CreateUrl()}"), ConvertObjectToJson());
-                return DeserializeToJson(await response.Content.ReadAsStringAsync());
+                return await url.WithClient(_httpClient).PostJsonAsync(_json).ReceiveJson<dynamic>().ConfigureAwait(false); ;
             }
         }
 
@@ -116,17 +98,13 @@ namespace Ngonzalez.Util
         {
             if (_restMethod == RestMethod.Get)
             {
-                var t = $"{_hostUrl}/{_apiUrl}{AddParameters()}";
-                var response = _httpClient.GetAsync(new Uri($"{CreateUrl()}{AddParameters()}")).Result;
-                return DeserializeToJson(response.Content.ReadAsStringAsync().Result);
+                return url.WithClient(_httpClient).GetAsync().ReceiveJson<dynamic>().GetAwaiter().GetResult();
             }
             else
             {
-                var response = _httpClient.PostAsync(new Uri($"{CreateUrl()}"), ConvertObjectToJson()).Result;
-                return DeserializeToJson(response.Content.ReadAsStringAsync().Result);
+                return url.WithClient(_httpClient).PostJsonAsync(_json).ReceiveJson<dynamic>().GetAwaiter().GetResult();
             }
 
         }
-
     }
 }

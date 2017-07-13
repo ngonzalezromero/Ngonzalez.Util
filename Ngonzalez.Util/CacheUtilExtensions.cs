@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -22,35 +22,28 @@ namespace Ngonzalez.Util
             }
         }
 
-        public static bool TryGetValue<T>(this IDistributedCache cache, string key, out T value)
+        public async static Task<T> GetValueAsync<T>(this IDistributedCache cache, string key) where T : class
         {
-            try
+            var temp = await cache.GetAsync(key).ConfigureAwait(false);
+            if (temp != null)
             {
-                value = Deserializer<T>(cache.Get(key));
-                return true;
+                return Deserializer<T>(temp);
             }
-            catch (Exception)
-            {
-                value = default(T);
-                return false;
-            }
+            return null;
         }
 
-        private static byte[] Serializer(this object value)
+        public static Task SetWithAbsoluteAsync(this IDistributedCache cache, string key, object value, TimeSpan time)
         {
-            var json = JsonConvert.SerializeObject(value, Formatting.None);
-
-            byte[] bytes;
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
-                binaryWriter.Write(json);
-                bytes = memoryStream.ToArray();
-            }
-            return bytes;
+            return cache.SetAsync(key, Serializer(value), new DistributedCacheEntryOptions().SetAbsoluteExpiration(time));
         }
 
-        private static T Deserializer<T>(this byte[] byteArray)
+        public static byte[] Serializer(this object value)
+        {
+            var json = JsonConvert.SerializeObject(value, Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            return Encoding.UTF8.GetBytes(json);
+        }
+
+        public static T Deserializer<T>(this byte[] byteArray)
         {
             var json = Encoding.UTF8.GetString(byteArray);
             return JsonConvert.DeserializeObject<T>(json);

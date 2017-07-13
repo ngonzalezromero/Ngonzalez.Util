@@ -16,10 +16,11 @@ namespace Ngonzalez.Util
         IRestHelper UrlHost(string hostUrl);
         IRestHelper UrlApi(string apiUrl);
         IRestHelper HttpMethod(RestMethod method);
-        IRestHelper RequestParameter(Dictionary<string, string> parameter);
+        IRestHelper RequestParameter(Dictionary<string, dynamic> parameter);
         IRestHelper RequestBody(dynamic json);
+        IRestHelper SetQueryParam(string key, dynamic data);
         dynamic ExecuteSafe();
         dynamic Execute();
-        Task<object> ExecuteAsync();
+        Task<dynamic> ExecuteAsync();
     }
 }

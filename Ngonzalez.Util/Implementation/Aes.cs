@@ -52,14 +52,9 @@ namespace Ngonzalez.Util
             byte[] bKey = Encoding.UTF8.GetBytes(PrivateKey);
             byte[] bIV = Encoding.UTF8.GetBytes(IV);
             byte[] byteArray = Convert.FromBase64String(encryptStr);
-
             string decrypt = null;
-
-#if NETCOREAPP1_0
             var aes = System.Security.Cryptography.Aes.Create();
-#else
-            var aes = Rijndael.Create();
-#endif
+
             try
             {
                 using (MemoryStream mStream = new MemoryStream())
@@ -72,11 +67,10 @@ namespace Ngonzalez.Util
                     }
                 }
             }
-            catch { }
-#if !NETCOREAPP1_0
-            aes.Clear();
-#endif
-
+            finally
+            {
+                aes?.Dispose();
+            }
             return decrypt;
         }
 
@@ -87,11 +81,8 @@ namespace Ngonzalez.Util
             byte[] byteArray = Encoding.UTF8.GetBytes(plainStr);
 
             string encrypt = null;
-#if NETCOREAPP1_0
             var aes = System.Security.Cryptography.Aes.Create();
-#else
-            var aes = Rijndael.Create();
-#endif
+
             try
             {
                 using (MemoryStream mStream = new MemoryStream())
@@ -104,13 +95,10 @@ namespace Ngonzalez.Util
                     }
                 }
             }
-            catch
+            finally
             {
-
+                aes?.Dispose();
             }
-#if !NETCOREAPP1_0
-            aes.Clear();
-#endif
             return encrypt;
         }
     }
